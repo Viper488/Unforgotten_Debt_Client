@@ -12,8 +12,8 @@ import com.example.udclient.R;
 
 import java.util.List;
 
-public class TableProductAdapter extends RecyclerView.Adapter<TableProductAdapter.TableViewHolder> {
-    private List<ProductDto> productList;
+public class TablePaymentAdapter extends RecyclerView.Adapter<TablePaymentAdapter.TableViewHolder> {
+    private List<PaymentGetDto> paymentList;
     private OnItemClickListener listener;
     public interface OnItemClickListener{
         void onItemClick(int position);
@@ -28,12 +28,14 @@ public class TableProductAdapter extends RecyclerView.Adapter<TableProductAdapte
         public TextView textView;
         public TextView textView2;
         public TextView textView3;
+        public TextView textView4;
 
         public TableViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
-            textView =itemView.findViewById(R.id.productName);
-            textView2 = itemView.findViewById(R.id.productPrice);
-            textView3 = itemView.findViewById(R.id.productNick);
+            textView =itemView.findViewById(R.id.paymentNick);
+            textView2=itemView.findViewById(R.id.paymentVal);
+            textView3=itemView.findViewById(R.id.paymentDate);
+            textView4=itemView.findViewById(R.id.paymentTime);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -49,31 +51,32 @@ public class TableProductAdapter extends RecyclerView.Adapter<TableProductAdapte
         }
     }
 
-    public TableProductAdapter(List<ProductDto> list){
-        productList =list;
+    public TablePaymentAdapter(List<PaymentGetDto> list){
+        paymentList=list;
     }
 
 
     @NonNull
     @Override
     public TableViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_item,parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.payment_item,parent,false);
         TableViewHolder tvh = new TableViewHolder(v,listener);
         return tvh;
     }
 
     @Override
     public void onBindViewHolder(@NonNull TableViewHolder holder, int position) {
-        ProductDto currentTable = productList.get(position);
+        PaymentGetDto currentTable = paymentList.get(position);
 
-        holder.textView.setText(currentTable.getName());;
-        holder.textView2.setText(currentTable.getPrice().toString() + " PLN");
-        holder.textView3.setText(currentTable.getNick());
+        holder.textView.setText(currentTable.getNick().toString());
+        holder.textView2.setText(currentTable.getValue().toString() + " PLN");
+        holder.textView3.setText(currentTable.getDate().toString());
+        holder.textView4.setText(currentTable.getTime().toString());
 
     }
 
     @Override
     public int getItemCount() {
-        return productList.size();
+        return paymentList.size();
     }
 }

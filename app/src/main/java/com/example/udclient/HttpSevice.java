@@ -3,9 +3,13 @@ package com.example.udclient;
 import com.example.udclient.classes.LoginDto;
 import com.example.udclient.classes.MeetingDetailsDto;
 import com.example.udclient.classes.MeetingListDto;
+import com.example.udclient.classes.PaymentDto;
+import com.example.udclient.classes.PaymentGetDto;
+import com.example.udclient.classes.PaymentListDto;
 import com.example.udclient.classes.ProductListDto;
 import com.example.udclient.classes.RegisterDto;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -24,7 +28,7 @@ public interface HttpSevice {
     Call<Void> register(@Body RegisterDto registerDto);
 
     @POST("ud-server/create_meeting")
-    Call<Void> createMeeting(@Query("name") String name , @Query("password") String password);
+    Call<String> createMeeting(@Query("name") String name , @Query("password") String password);
 
     @POST("ud-server/join_meeting")
     Call<Void> joinMeeting(@Query("name") String name , @Query("password") String password);
@@ -43,5 +47,24 @@ public interface HttpSevice {
 
     @POST("ud-server/add_person")
     Call<Void> addPerson(@Query("id_meeting") String id_meeting,@Query("nick") String nick);
+
+    @POST("ud-server/product")
+    Call<Void> addProduct(@Query("name") String name,@Query("price") String price,@Query("id_person") String id_person,@Query("id_meeting") String id_meeting);
+
+    @GET("ud-server/payments_meeting/{id_meeting}")
+    Call<PaymentListDto> getMeetingsPayments(@Path("id_meeting") String id_meeting);
+
+    @POST("ud-server/payment")
+    Call<Void> insertPayment(@Body PaymentDto paymentDto);
+
+    @GET("ud-server/payments_sum_meeting/{id_meeting}")
+    Call<Double> getMeetingsPayment(@Path("id_meeting") String id_meeting);
+
+    @GET("ud-server/payments_sum_person/{id_person}")
+    Call<Double> getSumPersonPayments(@Path("id_person") String id_person);
+
+    @GET("ud-server/payments_person/{id_person}")
+    Call<PaymentListDto> getPersonPayments(@Path("id_person") String id_person);
+
 
 }

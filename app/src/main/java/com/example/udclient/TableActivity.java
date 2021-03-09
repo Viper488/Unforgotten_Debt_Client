@@ -32,6 +32,7 @@ public class TableActivity extends AppCompatActivity {
     private HttpSevice httpSevice;
     private static String url = "http://192.168.0.10:8080/";
     private String nick;
+    private int id_person;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class TableActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.navigation_home) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("TABLE_DATA",meetingDetailsDto);
+                    bundle.putInt("ID_MEETING",meetingDetailsDto.getId_meeting());
                     selectedFragment = new UsersFragment();
                     selectedFragment.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment2,selectedFragment).commit();
@@ -78,13 +80,17 @@ public class TableActivity extends AppCompatActivity {
                                 bundle.putInt("NUMMEM",meetingDetailsDto.getPersonMeetingList().size());
 
                                 for(PersonMeetingDto personMeetingDto : meetingDetailsDto.getPersonMeetingList()){
-                                    System.out.println(personMeetingDto.getName() + " rowna sie " + nick);
+                                    System.out.println(personMeetingDto.getNick() + " rowna sie " + nick);
                                     if(personMeetingDto.getNick().equals(nick)){
                                         nick = personMeetingDto.getUser_type();
+                                        id_person = personMeetingDto.getId_person();
+                                        break;
                                     }
                                 }
                                 System.out.println("uprawnienia  " + nick );
                                 bundle.putString("USER_PERMISSIONS", nick);
+                                bundle.putInt("ID_PERSON",id_person);
+                                bundle.putInt("ID_MEETING",meetingDetailsDto.getId_meeting());
                                 frag.setArguments(bundle);
 
                                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment2, frag).commit();

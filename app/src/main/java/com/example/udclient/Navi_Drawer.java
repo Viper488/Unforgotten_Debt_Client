@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.udclient.classes.MeetingDetailsDto;
 import com.example.udclient.classes.MeetingListDto;
 import com.example.udclient.ui.fragments.HomeFragment;
 import com.example.udclient.ui.fragments.SummaryFragment;
@@ -152,25 +153,46 @@ public class Navi_Drawer extends AppCompatActivity implements NavigationView.OnN
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         System.out.println(tableName.getText().toString() + " siema cos nie dziala "  +tablePassword.getText().toString());
-                        Call<Void> call = httpSevice.createMeeting(tableName.getText().toString(),tablePassword.getText().toString());
-                        call.enqueue(new Callback<Void>() {
+                        Call<String> call = httpSevice.createMeeting(tableName.getText().toString(),tablePassword.getText().toString());
+                        call.enqueue(new Callback<String>() {
                             @Override
-                            public void onResponse(Call<Void> call, Response<Void> response) {
-                                if(response.code()==200){
-                                    intent.putExtra("TABLE_NAME", tableName.getText().toString());
-                                    startActivity(intent);
-                                }
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                    String code = response.body();
+                                    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@$$$$$$$$$$$$$$$$$$$   " + code);
+
+                                    //TODO : KOD jezeli craete bedzie zwracalo code powinno przenosic dalej ale chuj wie
+//                                    intent = new Intent(Navi_Drawer.this, TableActivity.class);
+//
+//                                    Call<MeetingDetailsDto> call2 = httpSevice.getMeetingDetails(code);
+//
+//                                    call2.enqueue(new Callback<MeetingDetailsDto>() {
+//                                        @Override
+//                                        public void onResponse(Call<MeetingDetailsDto> call2, Response<MeetingDetailsDto> response2) {
+//                                            MeetingDetailsDto meetingDetailsDto = response2.body();
+//                                            intent.putExtra("TABLE_DATA",meetingDetailsDto);
+//                                            intent.putExtra("USER_NICK",nick);
+//
+//                                            startActivity(intent);
+//                                        }
+//
+//                                        @Override
+//                                        public void onFailure(Call<MeetingDetailsDto> call2, Throwable t2) {
+//                                            System.err.println(t2.getMessage());
+//
+//                                        }
+//                                    });
+
                             }
 
                             @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
+                            public void onFailure(Call<String> call, Throwable t) {
                                 System.err.println(t.getMessage());
                                 Toast.makeText(Navi_Drawer.this, "Server is offline", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                 })
-                .setNegativeButton("Anuluj", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
@@ -194,18 +216,27 @@ public class Navi_Drawer extends AppCompatActivity implements NavigationView.OnN
                     MeetingListDto meetingListDto = response.body();
                     System.out.println(meetingListDto.getMeetingDtoList().get(0));
                     bundle.putSerializable("DETAILS",meetingListDto);
-                    System.out.println("JESTEŚMY W NAVI_DRAWER" + bundle.getSerializable("DETAILS"));
+                    bundle.putString("USER_NICK",nick);
+                    bundle.putString("USER_ID",idPerson);
 
                     mFrag.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, mFrag).commit();
                 }
                 @Override
                 public void onFailure(Call<MeetingListDto> call, Throwable t) {
+                    System.out.println(t.getMessage());
 
                 }
             });
         }
-        if(item.getItemId() == R.id.nav_summary){getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment,new SummaryFragment()).commit();}
+        if(item.getItemId() == R.id.nav_summary){
+            Bundle bundle = new Bundle();
+            bundle.putString("ID_PERSON", idPerson);
+            bundle.putString("NAME", name);
+            bundle.putString("SURNAME", surname);
+            SummaryFragment summaryFragment =new SummaryFragment();
+            summaryFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment,summaryFragment).commit();}
         if(item.getItemId() == R.id.nav_home){
             Bundle bundle1 = new Bundle();
             bundle1.putString("NAME", name);

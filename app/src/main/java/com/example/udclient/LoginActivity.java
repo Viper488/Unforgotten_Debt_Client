@@ -38,8 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         loadData();
         Retrofit retrofit = new Retrofit.Builder().baseUrl(url).addConverterFactory(GsonConverterFactory.create()).build();
         httpSevice = retrofit.create(HttpSevice.class);
-
-
     }
 
     public void logInApp(View view) {
